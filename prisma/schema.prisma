@@ -6,3 +6,107 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum UserRole {
+  ADMIN
+  VOLUNTEER
+}
+
+model User {
+  id          Int         @id @default(autoincrement())
+  email       String      @unique
+  firstName   String
+  lastName    String?
+  phone       String?
+  role        UserRole
+  password    String
+  age         String?
+  avatar      String?
+  address     String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  tasks       Task[]
+  crisis      Crisis[]
+  inventories Inventory[]
+
+  @@map("users")
+}
+
+enum CrisisStatus {
+  PENDING
+  APPROVED
+  RESOLVED
+}
+
+enum CrisisSeverity {
+  Low
+  Medium
+  High
+  Critical
+}
+
+model Crisis {
+  id           Int            @id @default(autoincrement())
+  title        String
+  description  String
+  imageUrls    String[]
+  locations    String[]
+  severity     CrisisSeverity
+  status       CrisisStatus
+  requiredHelp String
+  admin        User           @relation(fields: [approvedBy], references: [id])
+  approvedBy   Int
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@map("crisis")
+}
+
+model Donation {
+  id         Int      @id @default(autoincrement())
+  amount     Float
+  donorName  String
+  donorEmail String
+  message    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("donations")
+}
+
+enum InventoryType {
+  RELIEF
+  EXPENSE
+}
+
+model Inventory {
+  id        Int           @id @default(autoincrement())
+  name      String
+  type      InventoryType
+  quantity  Int
+  user      User          @relation(fields: [createdBy], references: [id])
+  createdBy Int
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("inventories")
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+model Task {
+  id          Int        @id @default(autoincrement())
+  description String
+  status      TaskStatus
+  location    String
+  volunteer   User       @relation(fields: [assignedTo], references: [id])
+  assignedTo  Int
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("tasks")
+}
