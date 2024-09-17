@@ -107,7 +107,7 @@ const uploadMultipleToCloudinary = async (
       if (result) {
         fs.unlinkSync(filePath) // Remove the local file after successful upload
       }
-      uploadResults.push({ publicId: result.public_id, url: result.secure_url })
+      uploadResults.push(result.secure_url)
     }
 
     return uploadResults // Return an array of results with publicId and url

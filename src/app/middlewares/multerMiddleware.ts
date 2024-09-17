@@ -14,8 +14,12 @@ const storage = multer.diskStorage({
 export const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
-    // Handle image uploads for 'cover' and 'avatar' fields
-    if (file.fieldname === 'covers' || file.fieldname === 'avatar') {
+    // Handle image uploads for 'imageUrls' and 'avatar' fields
+    if (
+      file.fieldname === 'cover' ||
+      file.fieldname === 'avatar' ||
+      file.fieldname === 'imageUrls'
+    ) {
       if (
         file.mimetype === 'image/png' ||
         file.mimetype === 'image/jpg' ||
