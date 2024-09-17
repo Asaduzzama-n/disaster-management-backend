@@ -7,7 +7,6 @@ import { IRefreshTokenResponse, IUserLoginResponse } from './auth.interface'
 import { jwtHelpers } from '../../../helpers/jwt'
 import config from '../../../config'
 import { Secret } from 'jsonwebtoken'
-import { uploadToCloudinary } from '../../../utils/cloudinary'
 
 const createUser = async (data: User) => {
   const { email } = data
@@ -114,57 +113,8 @@ const refreshToken = async (
   return { accessToken: newAccessToken }
 }
 
-const deleteUser = async (id: number): Promise<User> => {
-  const result = await prisma.user.delete({ where: { id } })
-  return result
-}
-
-const updateUser = async (id: number, payload: Partial<User>, files: any) => {
-  const isUserExist = await prisma.user.findUnique({ where: { id } })
-
-  if (!isUserExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User does not exists.')
-  }
-
-  const updatedUserData: Partial<User> = { ...payload }
-
-  let updatedAvatar = null
-
-  console.log(files.avatar.path)
-
-  if (files && Object.keys(files).length > 0) {
-    updatedAvatar = await uploadToCloudinary(
-      files.avatar[0]?.path,
-      'avatars',
-      'raw',
-    )
-  }
-
-  if (!updatedAvatar) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to upload image.')
-  }
-
-  updatedUserData.avatar = updatedAvatar.url
-
-  const result = await prisma.user.update({
-    where: { id },
-    data: { ...updatedUserData },
-  })
-
-  if (!result) {
-    throw new ApiError(
-      httpStatus.BAD_REQUEST,
-      'Failed to update profile information.',
-    )
-  }
-
-  return result
-}
-
 export const AuthServices = {
   createUser,
   loginUser,
   refreshToken,
-  deleteUser,
-  updateUser,
 }
