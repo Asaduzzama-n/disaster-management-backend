@@ -53,41 +53,8 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
   })
 })
 
-const deleteUser = catchAsync(async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id)
-  const result = await AuthServices.deleteUser(id)
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'User deleted successfully!',
-    data: result,
-  })
-})
-
-const updateUser = catchAsync(async (req: Request, res: Response) => {
-  const files = req.files
-  const id = req.params.id
-  const { ...updateUserData } = req.body
-
-  const result = await AuthServices.updateUser(
-    Number(id),
-    updateUserData,
-    files,
-  )
-
-  sendResponse<User>(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Profile updated successfully!',
-    data: result,
-  })
-})
-
 export const AuthController = {
   createUser,
   loginUser,
   refreshToken,
-  deleteUser,
-  updateUser,
 }
