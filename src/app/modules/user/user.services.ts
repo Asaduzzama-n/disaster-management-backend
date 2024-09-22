@@ -1,6 +1,6 @@
 import { User } from '@prisma/client'
 import prisma from '../../../shared/prisma'
-import { IWhereClause } from './user.interface'
+import { IUser, IWhereClause } from './user.interface'
 import { IGenericResponse } from '../../../interfaces/common'
 import ApiError from '../../../errors/ApiError'
 import httpStatus from 'http-status'
@@ -8,15 +8,16 @@ import { uploadToCloudinary } from '../../../utils/cloudinary'
 
 const getAllUser = async (
   options: any,
-): Promise<IGenericResponse<User[]> | null> => {
-  const { sortBy, sortOrder, searchTerm, limit, page } = options
+): Promise<IGenericResponse<IUser[]> | null> => {
+  const { sortBy, sortOrder, searchTerm, limit, page, role } = options
 
   const skip = parseInt(limit) * parseInt(page) - parseInt(limit) || 0
-
   const take = parseInt(limit) || 10
 
+  // Initialize the where clause
   const whereClause: IWhereClause = {}
 
+  // Add search term condition
   if (searchTerm) {
     whereClause.OR = [
       {
@@ -25,7 +26,6 @@ const getAllUser = async (
           mode: 'insensitive',
         },
       },
-
       {
         address: {
           contains: searchTerm,
@@ -41,16 +41,41 @@ const getAllUser = async (
     ]
   }
 
+  // Add role filter condition
+  if (role) {
+    whereClause.role = role
+  }
+
   return await prisma.$transaction(async tx => {
+    // Fetch user data, excluding the password field
     const result = await tx.user.findMany({
       skip,
       take,
+
       orderBy:
         sortBy && sortOrder ? { [sortBy]: sortOrder } : { createdAt: 'desc' },
       where: whereClause,
+
+      select: {
+        password: false,
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        phone: true,
+        role: true,
+        age: true,
+        avatar: true,
+        address: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     })
 
-    const total = result.length
+    // Get total count of users matching the filter
+    const total = await tx.user.count({
+      where: whereClause,
+    })
 
     return {
       meta: {

@@ -10,9 +10,8 @@ const createCrisisZodSchema = z.object({
   imageUrls: z.array(z.string().url('Invalid image URL format')).optional(),
   locations: z.array(z.string().min(1, 'Location cannot be empty')),
   severity: CrisisSeverity,
-  status: CrisisStatus,
   requiredHelp: z.string().min(1, 'Required help description is needed'),
-  approvedBy: z.string(),
+  approvedBy: z.string().optional(),
 })
 
 // Zod validation schema for Crisis model

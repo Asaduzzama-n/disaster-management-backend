@@ -9,7 +9,7 @@ router.get('/:id', TaskController.getSingleTask)
 router.delete('/:id', TaskController.deleteTask)
 
 router.post(
-  '/create',
+  '/',
   validateRequest(TaskValidation.createTaskZodSchema),
   TaskController.createTask,
 )

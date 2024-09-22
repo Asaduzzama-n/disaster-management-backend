@@ -9,7 +9,7 @@ router.get('/:id', InventoryController.getSingleInventory)
 router.delete('/:id', InventoryController.deleteInventory)
 
 router.post(
-  '/create',
+  '/',
   validateRequest(InventoryValidation.createInventoryZodSchema),
   InventoryController.createInventory,
 )
