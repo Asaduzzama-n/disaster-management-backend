@@ -5,7 +5,6 @@ import sendResponse from '../../../shared/sendResponse'
 import httpStatus from 'http-status'
 import config from '../../../config'
 import { IRefreshTokenResponse } from './auth.interface'
-import { User } from '@prisma/client'
 
 const createUser = catchAsync(async (req: Request, res: Response) => {
   const result = await AuthServices.createUser(req.body)
@@ -53,7 +52,21 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
   })
 })
 
+const getUser = catchAsync(async (req: Request, res: Response) => {
+  const authHeader = req.headers['authorization']
+
+  const result = await AuthServices.getUser(authHeader as string)
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User retrieved successfully!',
+    data: result,
+  })
+})
+
 export const AuthController = {
+  getUser,
   createUser,
   loginUser,
   refreshToken,

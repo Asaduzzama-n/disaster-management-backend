@@ -9,7 +9,7 @@ router.get('/:id', DonationController.getSingleDonation)
 router.delete('/:id', DonationController.deleteDonation)
 
 router.post(
-  '/create',
+  '/',
   validateRequest(DonationValidation.createDonationZodSchema),
   DonationController.createDonation,
 )

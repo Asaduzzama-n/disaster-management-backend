@@ -11,8 +11,10 @@ router.post(
   AuthController.createUser,
 )
 
+router.get('/user', AuthController.getUser)
+
 router.post(
-  '/sign-in',
+  '/login',
   validateRequest(AuthValidation.userLoginZodSchema),
   AuthController.loginUser,
 )

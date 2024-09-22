@@ -14,12 +14,7 @@ const storage = multer.diskStorage({
 export const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
-    // Handle image uploads for 'imageUrls' and 'avatar' fields
-    if (
-      file.fieldname === 'cover' ||
-      file.fieldname === 'avatar' ||
-      file.fieldname === 'imageUrls'
-    ) {
+    if (file.fieldname === 'imageUrls') {
       if (
         file.mimetype === 'image/png' ||
         file.mimetype === 'image/jpg' ||
@@ -34,21 +29,12 @@ export const upload = multer({
           ),
         )
       }
-    }
-    // Handle PDF uploads for 'file' field
-    else if (file.fieldname === 'file') {
-      if (file.mimetype === 'application/pdf') {
-        cb(null, true)
-      } else {
-        cb(new ApiError(httpStatus.BAD_REQUEST, 'Only .pdf format is allowed!'))
-      }
     } else {
-      cb(new ApiError(httpStatus.BAD_REQUEST, 'There was an unknown error!'))
+      cb(new ApiError(httpStatus.BAD_REQUEST, 'Invalid field name!'))
     }
   },
 })
 
-// Middleware to handle multiple image uploads
 export const multipleImageUpload = upload.fields([
-  { name: 'covers', maxCount: 5 }, // Allows up to 5 images for cover
+  { name: 'imageUrls', maxCount: 5 }, // Allows up to 5 images for imageUrls
 ])

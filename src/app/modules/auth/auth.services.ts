@@ -26,7 +26,6 @@ const createUser = async (data: User) => {
 
   const createdUser = await prisma.user.create({
     data: userData,
-    // select: { password: false },
   })
 
   if (!createdUser) {
@@ -113,8 +112,41 @@ const refreshToken = async (
   return { accessToken: newAccessToken }
 }
 
+const getUser = async (bearerToken: string) => {
+  let verifiedToken = null
+
+  try {
+    verifiedToken = jwtHelpers.verifyToken(
+      bearerToken,
+      config.jwt.secret as Secret,
+    )
+  } catch (error) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Invalid accessToken Token')
+  }
+
+  const { email } = verifiedToken
+
+  const userData = await prisma.user.findUnique({
+    where: { email },
+    select: {
+      password: false,
+      firstName: true,
+      lastName: true,
+      avatar: true,
+      role: true,
+      age: true,
+      phone: true,
+    },
+  })
+
+  return {
+    userData,
+  }
+}
+
 export const AuthServices = {
   createUser,
   loginUser,
   refreshToken,
+  getUser,
 }
