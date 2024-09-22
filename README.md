@@ -33,7 +33,8 @@ Installation
 1. Clone the Repository
 
 git clone git@github.com:Asaduzzama-n/disaster-management-backend.git
-cd disaster-management-backend
+
+    cd disaster-management-backend
 
 2. Install Dependencies
 
@@ -45,18 +46,17 @@ Create a .env file in the root directory and add the following environment varia
 
 env
 
-NODE_ENV=development
-PORT=5000
-DATABASE_URL="postgresql://postgres:<pass>@localhost:5432/disaster-management?schema=public"
-BCRYPT_SALT_ROUND=12
-JWT_SECRET='secret'
-JWT_EXPIRES_IN=50m
-JWT_REFRESH_SECRET='refresh-secret'
-JWT_REFRESH_EXPIRES_IN=20d
-
-CLOUDINARY_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
+    NODE_ENV=development
+    PORT=5000
+    DATABASE_URL="postgresql://postgres:<pass>@localhost:5432/disaster-management?schema=public"
+    BCRYPT_SALT_ROUND=12
+    JWT_SECRET='secret'
+    JWT_EXPIRES_IN=50m
+    JWT_REFRESH_SECRET='refresh-secret'
+    JWT_REFRESH_EXPIRES_IN=20d
+    CLOUDINARY_NAME=
+    CLOUDINARY_API_KEY=
+    CLOUDINARY_API_SECRET=
 
 Make sure to replace the database URL and Cloudinary credentials with your own.
 
